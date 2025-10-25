@@ -5,6 +5,8 @@ require("dotenv").config();
 const flightsRouter = require("./routes/flights");
 const reservationsRouter = require("./routes/reservations");
 const authRouter = require("./routes/auth");
+const locationsRouter = require("./routes/locations");
+const availableDatesRouter = require("./routes/availableDates");
 
 const app = express();
 
@@ -23,6 +25,8 @@ app.use(express.json());
 app.use("/api/flights", flightsRouter);
 app.use("/api/reservations", reservationsRouter);
 app.use("/api", authRouter);
+app.use("/api/locations", locationsRouter);
+app.use("/api/available-dates", availableDatesRouter);
 
 // ⚙️ Puerto y arranque del servidor
 const PORT = process.env.PORT || 4000;

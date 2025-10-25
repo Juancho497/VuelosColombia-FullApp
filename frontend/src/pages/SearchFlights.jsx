@@ -1,6 +1,9 @@
 import "../styles/App.css";
 import React, { useState } from "react";
 import LogoutButton from "../components/LogoutButton";
+import { DateRange } from "react-date-range";
+import "react-date-range/dist/styles.css"; // estilos base
+import "react-date-range/dist/theme/default.css"; // tema por defecto
 
 function SearchFlights() {
   const [origin, setOrigin] = useState("");
@@ -10,12 +13,102 @@ function SearchFlights() {
   const [formData, setFormData] = useState({ name: "", document: "" });
   const [seatNumber, setSeatNumber] = useState("");
   const [message, setMessage] = useState("");
-  const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
   const [sort, setSort] = useState("");
   const [loading, setLoading] = useState(false);
   const [showReservation, setShowReservation] = useState(false);
+  // 🔹 Estados para los orígenes y destinos dinámicos
+  const [origins, setOrigins] = useState([]);
+  const [destinations, setDestinations] = useState([]);
+  // 🔹 Estado del rango de fechas seleccionado
+  const [dateRange, setDateRange] = useState([
+    {
+      startDate: new Date(),
+      endDate: new Date(),
+      key: "selection",
+    },
+  ]);
 
+  // 🔹 Controla si el calendario está visible o no
+  const [showCalendar, setShowCalendar] = useState(false);
+
+  // 🔹 Fechas disponibles según el origen/destino
+  const [availableDates, setAvailableDates] = useState([]);
+  // 🔧 Normalizar las fechas disponibles a 'YYYY-MM-DD' y guardarlas en un Set
+  const availableDatesSet = React.useMemo(() => {
+    const toKey = (d) => {
+      const dt = new Date(d);
+      const y = dt.getFullYear();
+      const m = String(dt.getMonth() + 1).padStart(2, "0");
+      const da = String(dt.getDate()).padStart(2, "0");
+      return `${y}-${m}-${da}`;
+    };
+    return new Set((availableDates || []).map(toKey));
+  }, [availableDates]);
+
+  // 🔹 Cargar fechas disponibles cuando cambian origen o destino
+  React.useEffect(() => {
+    if (!origin || !destination) {
+      setAvailableDates([]);
+      return;
+    }
+
+    async function fetchAvailableDates() {
+      try {
+        const res = await fetch(
+          `http://localhost:4000/api/available-dates?origin=${origin}&destination=${destination}`
+        );
+        const data = await res.json();
+        setAvailableDates(data.dates || []);
+      } catch (error) {
+        console.error("❌ Error obteniendo fechas disponibles:", error);
+      }
+    }
+
+    fetchAvailableDates();
+  }, [origin, destination]);
+  // 📅 Al tener fechas disponibles, mover el calendario al primer día válido
+  React.useEffect(() => {
+    if (availableDates && availableDates.length > 0) {
+      const first = new Date(availableDates[0]);
+      setDateRange([{ startDate: first, endDate: first, key: "selection" }]);
+    }
+  }, [availableDates]);
+
+  // 🔹 Cargar orígenes y destinos desde la base de datos al iniciar
+  React.useEffect(() => {
+    async function fetchLocations() {
+      try {
+        const res = await fetch("http://localhost:4000/api/locations");
+        const data = await res.json();
+        setOrigins(data.origins || []);
+        setDestinations(data.destinations || []);
+      } catch (error) {
+        console.error("❌ Error al cargar ubicaciones:", error);
+      }
+    }
+    fetchLocations();
+  }, []);
+  // 🔹 Cargar destinos según el origen seleccionado
+  React.useEffect(() => {
+    if (!origin) return; // si no hay origen, no hace nada
+
+    async function fetchDestinationsByOrigin() {
+      try {
+        const res = await fetch(
+          `http://localhost:4000/api/locations/${origin}`
+        );
+        const data = await res.json();
+        setDestinations(data.destinations || []);
+      } catch (error) {
+        console.error("❌ Error al cargar destinos por origen:", error);
+      }
+    }
+
+    fetchDestinationsByOrigin();
+  }, [origin]);
+
+  // Buscar vuelos
+  // Buscar vuelos
   // Buscar vuelos
   async function searchFlights() {
     try {
@@ -26,8 +119,13 @@ function SearchFlights() {
       const query = new URLSearchParams();
       if (origin) query.append("origin", origin);
       if (destination) query.append("destination", destination);
-      if (from) query.append("from", from);
-      if (to) query.append("to", to);
+      if (dateRange[0]?.startDate)
+        query.append(
+          "from",
+          dateRange[0].startDate.toISOString().split("T")[0]
+        );
+      if (dateRange[0]?.endDate)
+        query.append("to", dateRange[0].endDate.toISOString().split("T")[0]);
       if (sort) query.append("sort", sort);
 
       const res = await fetch(
@@ -35,13 +133,16 @@ function SearchFlights() {
       );
       const data = await res.json();
 
-      if (data.length === 0) {
+      // 🧠 Maneja ambos casos: un solo vuelo o varios
+      const flightsArray = Array.isArray(data) ? data : data ? [data] : [];
+
+      if (flightsArray.length === 0) {
         setMessage("⚠️ No se encontraron vuelos con esos criterios.");
       } else {
-        setMessage(`✈️ Se encontraron ${data.length} vuelo(s).`);
+        setMessage(`✈️ Se encontraron ${flightsArray.length} vuelo(s).`);
       }
 
-      setFlights(data);
+      setFlights(flightsArray);
     } catch (error) {
       setMessage("❌ Error al buscar vuelos");
       console.error(error);
@@ -103,6 +204,13 @@ function SearchFlights() {
 
       <h1 className="logo">✈️ Vuelos Colombia</h1>
       <h2>Buscar Vuelos</h2>
+      {availableDates.length > 0 && (
+        <p
+          style={{ color: "#007bff", fontWeight: "bold", marginBottom: "10px" }}
+        >
+          ✈️ {availableDates.length} fecha(s) disponible(s) para esta ruta
+        </p>
+      )}
 
       <div
         style={{
@@ -113,24 +221,124 @@ function SearchFlights() {
           flexWrap: "wrap",
         }}
       >
-        <input
-          type="text"
-          placeholder="Origen"
-          value={origin}
-          onChange={(e) => setOrigin(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Destino"
+        <select value={origin} onChange={(e) => setOrigin(e.target.value)}>
+          <option value="">Seleccionar origen</option>
+          {origins.map((o, i) => (
+            <option key={i} value={o}>
+              {o}
+            </option>
+          ))}
+        </select>
+
+        <select
           value={destination}
           onChange={(e) => setDestination(e.target.value)}
-        />
-        <input
-          type="date"
-          value={from}
-          onChange={(e) => setFrom(e.target.value)}
-        />
-        <input type="date" value={to} onChange={(e) => setTo(e.target.value)} />
+        >
+          <option value="">Seleccionar destino</option>
+          {destinations
+            .filter((d) => d !== origin) // evita mostrar el mismo lugar como destino
+            .map((d, i) => (
+              <option key={i} value={d}>
+                {d}
+              </option>
+            ))}
+        </select>
+        {/* 📅 Campo visual para abrir el calendario con las fechas seleccionadas */}
+        <div style={{ position: "relative" }}>
+          <input
+            type="text"
+            readOnly
+            value={`${dateRange[0].startDate.toISOString().split("T")[0]} → ${
+              dateRange[0].endDate.toISOString().split("T")[0]
+            }`}
+            onClick={() => setShowCalendar(!showCalendar)}
+            style={{
+              padding: "8px",
+              borderRadius: "6px",
+              border: "1px solid #ccc",
+              cursor: "pointer",
+              textAlign: "center",
+              fontWeight: "500",
+              color: "#333",
+              width: "200px",
+            }}
+          />
+          {showCalendar && (
+            <div
+              style={{
+                position: "absolute",
+                top: "45px",
+                left: "0",
+                zIndex: 1000,
+                backgroundColor: "white",
+                padding: "15px",
+                borderRadius: "10px",
+                boxShadow: "0px 4px 12px rgba(0,0,0,0.1)",
+              }}
+            >
+              <DateRange
+                ranges={dateRange}
+                onChange={(item) => setDateRange([item.selection])}
+                moveRangeOnFirstSelection={false}
+                months={1}
+                direction="horizontal"
+                rangeColors={["#007bff"]}
+                disabledDay={(day) => {
+                  const y = day.getFullYear();
+                  const m = String(day.getMonth() + 1).padStart(2, "0");
+                  const da = String(day.getDate()).padStart(2, "0");
+                  const key = `${y}-${m}-${da}`;
+                  return !availableDatesSet.has(key);
+                }}
+                dayContentRenderer={(day) => {
+                  const y = day.getFullYear();
+                  const m = String(day.getMonth() + 1).padStart(2, "0");
+                  const da = String(day.getDate()).padStart(2, "0");
+                  const key = `${y}-${m}-${da}`;
+                  const isAvailable = availableDatesSet.has(key);
+                  return (
+                    <div
+                      style={{
+                        textAlign: "center",
+                        borderRadius: "50%",
+                        width: "28px",
+                        height: "28px",
+                        lineHeight: "28px",
+                        backgroundColor: isAvailable ? "#007bff" : "#f0f0f0",
+                        color: isAvailable ? "white" : "#ccc",
+                        margin: "0 auto",
+                        cursor: isAvailable ? "pointer" : "not-allowed",
+                      }}
+                      title={isAvailable ? "Disponible" : "No disponible"}
+                    >
+                      {day.getDate()}
+                    </div>
+                  );
+                }}
+              />
+
+              {/* ✅ Botón para confirmar selección */}
+              <div style={{ textAlign: "center", marginTop: "10px" }}>
+                <button
+                  onClick={() => {
+                    setShowCalendar(false);
+                  }}
+                  style={{
+                    backgroundColor: "#007bff",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "6px",
+                    padding: "8px 14px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Confirmar fecha
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
         <select value={sort} onChange={(e) => setSort(e.target.value)}>
           <option value="">Ordenar por precio</option>
           <option value="asc">Menor a mayor</option>

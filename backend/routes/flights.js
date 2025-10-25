@@ -9,23 +9,28 @@ router.get("/", async (req, res) => {
     let query = "SELECT * FROM flights WHERE 1=1";
     const params = [];
 
-    // Filtros dinámicos
+    // Filtro por origen
     if (origin) {
       query += " AND LOWER(origin) LIKE ?";
       params.push(`%${origin.toLowerCase()}%`);
     }
 
+    // Filtro por destino
     if (destination) {
       query += " AND LOWER(destination) LIKE ?";
       params.push(`%${destination.toLowerCase()}%`);
     }
 
-    if (from && to) {
-      query += " AND departure_time BETWEEN ? AND ?";
+    // ✅ Filtros de fecha (solo compara la parte de la fecha)
+    if (from && !to) {
+      query += " AND DATE(departure_time) = ?";
+      params.push(from);
+    } else if (from && to) {
+      query += " AND DATE(departure_time) BETWEEN ? AND ?";
       params.push(from, to);
     }
 
-    // Ordenamiento
+    // Ordenar por precio (si se solicita)
     if (sort === "asc") {
       query += " ORDER BY price ASC";
     } else if (sort === "desc") {

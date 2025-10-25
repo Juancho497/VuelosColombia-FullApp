@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Prueba de reserva</title>
+  </head>
+  <body>
+    <h2>Probar creación de reserva</h2>
+    <button id="btn">Enviar reserva</button>
+
+    <script>
+      document.getElementById("btn").addEventListener("click", async () => {
+        const body = {
+          flight_id: 1,
+          customer_name: "Juan Manuel Bustos",
+          customer_email: "juan@example.com",
+          passengers: [{ name: "Juan Manuel Bustos", document: "12345678" }],
+        };
+
+        try {
+          const res = await fetch("http://localhost:4000/api/reservations", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          });
+          const data = await res.json();
+          alert(JSON.stringify(data, null, 2));
+        } catch (err) {
+          alert("Error al conectar con el backend");
+          console.error(err);
+        }
+      });
+    </script>
+  </body>
+</html>

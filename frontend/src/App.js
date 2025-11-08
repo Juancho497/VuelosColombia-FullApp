@@ -11,6 +11,8 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import SearchFlights from "./pages/SearchFlights";
 import AdminPanel from "./pages/AdminPanel";
+import Profile from "./pages/Profile";
+import Navbar from "./components/Navbar";
 
 // 🔥 Componente que limpia sesión y redirige siempre al login al iniciar
 function ForceLoginOnStart() {
@@ -30,6 +32,9 @@ function App() {
 
   return (
     <Router>
+      {/* ✅ Navbar visible solo si hay sesión iniciada */}
+      {token && role && <Navbar />}
+
       <Routes>
         {/* Limpieza forzada al cargar */}
         <Route path="/" element={<ForceLoginOnStart />} />
@@ -56,6 +61,12 @@ function App() {
               <Navigate to="/login" />
             )
           }
+        />
+
+        {/* ✅ Nueva página de perfil */}
+        <Route
+          path="/profile"
+          element={token && role ? <Profile /> : <Navigate to="/login" />}
         />
 
         {/* Cualquier otra ruta → login */}

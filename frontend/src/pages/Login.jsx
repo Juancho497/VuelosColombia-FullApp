@@ -24,10 +24,12 @@ function Login() {
       });
 
       const data = await res.json();
+      console.log("🧾 Datos del login:", data);
 
       if (res.ok) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("role", data.rol);
+        localStorage.setItem("userName", data.username);
 
         await Swal.fire({
           icon: "success",
@@ -65,46 +67,57 @@ function Login() {
   };
 
   return (
-    <div className="container">
-      <h2>Iniciar Sesión</h2>
+    <div className="login-container">
+      <div className="welcome-banner">
+        <h1>
+          ✈️ ¡Bienvenido a <span>Vuelos Colombia</span>!
+        </h1>
+        <p>
+          "Viajar no solo te lleva a lugares, sino a nuevas versiones de ti
+          mismo."
+        </p>
+      </div>
 
-      {/* 🚫 Evita que Chrome autocomplete o valide contraseñas */}
-      <form
-        className="form-container"
-        onSubmit={(e) => e.preventDefault()}
-        autoComplete="off" // 👈 Desactiva autocompletar a nivel de formulario
-      >
-        <input
-          type="text"
-          placeholder="Usuario"
-          value={usuario}
-          onChange={(e) => setUsuario(e.target.value)}
-          name="fake-user" // 👈 Cambia el nombre para que Chrome no lo asocie a credenciales
+      <div className="login-card">
+        <h2>Iniciar Sesión</h2>
+
+        <form
+          className="form-container"
+          onSubmit={(e) => e.preventDefault()}
           autoComplete="off"
-        />
+        >
+          <input
+            type="text"
+            placeholder="Usuario"
+            value={usuario}
+            onChange={(e) => setUsuario(e.target.value)}
+            name="fake-user"
+            autoComplete="off"
+          />
 
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          name="fake-pass" // 👈 Evita que Chrome lo detecte como campo real de login
-          autoComplete="new-password" // 👈 Desactiva el aviso de contraseña comprometida
-        />
+          <input
+            type="password"
+            placeholder="Contraseña"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            name="fake-pass"
+            autoComplete="new-password"
+          />
 
-        <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
-          <button type="button" onClick={handleLogin}>
-            Iniciar Sesión
-          </button>
-          <button
-            type="button"
-            className="secondary"
-            onClick={handleRegisterRedirect}
-          >
-            Registrarse
-          </button>
-        </div>
-      </form>
+          <div className="button-group">
+            <button type="button" onClick={handleLogin}>
+              Iniciar Sesión
+            </button>
+            <button
+              type="button"
+              className="secondary"
+              onClick={handleRegisterRedirect}
+            >
+              Registrarse
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

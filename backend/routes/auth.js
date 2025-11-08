@@ -31,6 +31,8 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
+  console.log("📩 Login recibido:", username, password);
+
   try {
     const [rows] = await pool.query("SELECT * FROM users WHERE username = ?", [
       username,

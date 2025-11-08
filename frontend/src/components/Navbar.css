@@ -1,0 +1,81 @@
+/* 🌐 NAVBAR ESTILIZADO */
+.navbar {
+  background: linear-gradient(135deg, #007bff, #00c6ff);
+  padding: 14px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  color: white;
+  font-family: "Poppins", sans-serif;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  transition: all 0.3s ease;
+}
+
+/* 🔹 Links a la izquierda */
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.navbar-left a {
+  text-decoration: none;
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.navbar-left a:hover {
+  color: #ffeb3b;
+  transform: scale(1.05);
+}
+
+/* 🔹 Info y botón a la derecha */
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.navbar-right span {
+  font-size: 15px;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+/* 🔘 Botón de logout */
+.navbar-right button {
+  background-color: white;
+  color: #0056d6;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.navbar-right button:hover {
+  background-color: #e3e3e3;
+  color: #0044aa;
+  transform: scale(1.05);
+}
+
+/* 🔹 Responsive */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    text-align: center;
+    padding: 15px 20px;
+  }
+
+  .navbar-left {
+    margin-bottom: 10px;
+  }
+}

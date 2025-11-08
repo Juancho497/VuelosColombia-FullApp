@@ -146,3 +146,259 @@ tr:nth-child(even) {
   color: #0056b3;
   margin-bottom: 20px;
 }
+/* 🔹 Contenedor general */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0078ff, #00c6ff);
+  font-family: "Poppins", sans-serif;
+  padding: 20px;
+}
+
+/* 🔹 Banner de bienvenida */
+.welcome-banner {
+  text-align: center;
+  color: #fff;
+  margin-bottom: 40px;
+  animation: fadeIn 1.5s ease;
+}
+
+.welcome-banner h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.welcome-banner span {
+  color: #ffeb3b;
+}
+
+.welcome-banner p {
+  font-size: 1.2rem;
+  margin-top: 10px;
+  font-style: italic;
+  color: #f2f2f2;
+}
+
+/* 🔹 Tarjeta del formulario */
+.login-card {
+  background: #ffffff;
+  padding: 35px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+.login-card h2 {
+  margin-bottom: 20px;
+  color: #0078ff;
+}
+
+/* 🔹 Campos */
+.form-container input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  outline: none;
+  transition: 0.3s;
+}
+
+.form-container input:focus {
+  border-color: #0078ff;
+  box-shadow: 0 0 5px rgba(0, 120, 255, 0.4);
+}
+
+/* 🔹 Botones */
+.button-group {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+button {
+  background: #0078ff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #005ecb;
+}
+
+button.secondary {
+  background: #f0f0f0;
+  color: #0078ff;
+}
+
+button.secondary:hover {
+  background: #e2e2e2;
+}
+
+/* ✨ Animación */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* ==========================================================
+   ✈️ SEARCH FLIGHTS PAGE
+   ========================================================== */
+
+.search-page {
+  background: linear-gradient(135deg, #0078ff, #00c6ff);
+  min-height: 100vh;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* 🧭 Texto inspirador */
+.search-intro {
+  text-align: center;
+  color: #ffffff;
+  margin-bottom: 40px;
+  animation: fadeIn 1.2s ease;
+}
+
+.search-intro h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.search-intro p {
+  font-size: 1.1rem;
+  color: #f0f0f0;
+}
+
+/* 💺 Tarjeta principal del buscador */
+.search-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 40px 35px;
+  width: 100%;
+  max-width: 850px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  animation: fadeInUp 1s ease;
+}
+
+/* 📋 Inputs y selects */
+.search-card select,
+.search-card input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  margin-bottom: 15px;
+  transition: all 0.3s;
+}
+
+.search-card select:focus,
+.search-card input:focus {
+  border-color: #0078ff;
+  box-shadow: 0 0 6px rgba(0, 120, 255, 0.3);
+  outline: none;
+}
+
+/* 🔘 Botón principal */
+.search-card button {
+  background: #0078ff;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: all 0.3s;
+}
+
+.search-card button:hover {
+  background: #005ecb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 94, 203, 0.3);
+}
+
+/* ✨ Animación adicional */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* 🌟 Estilo visual para SearchFlights sin tocar el JSX */
+
+/* 🔹 Título principal */
+.logo {
+  font-size: 36px;
+  font-weight: 700;
+  color: #004aad;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* 🔹 Subtítulo (Buscar Vuelos) */
+.container h2 {
+  color: #006eff;
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: 25px;
+  letter-spacing: 0.5px;
+}
+
+/* ✨ Texto de bienvenida arriba del logo */
+.container::before {
+  content: "🌍 Encuentra tu próximo destino soñado ✈️";
+  display: block;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #007bff;
+  text-align: center;
+  margin-bottom: 10px;
+  animation: fadeIn 1.2s ease;
+}
+
+.container::after {
+  content: "Explora Colombia y el mundo con nuestras mejores ofertas de vuelo.";
+  display: block;
+  font-size: 1rem;
+  color: #555;
+  text-align: center;
+  margin-bottom: 30px;
+  font-style: italic;
+  animation: fadeIn 1.5s ease;
+}
+
+/* 🔹 Animación suave */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

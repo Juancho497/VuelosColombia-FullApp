@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "./Register.css"; // 👈 nuevo CSS visual
 
 function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [rol, setRol] = useState("user"); // rol por defecto
+  const [rol, setRol] = useState("user");
   const navigate = useNavigate();
 
   const handleRegister = async () => {
@@ -35,36 +36,42 @@ function Register() {
   };
 
   return (
-    <div className="container">
-      <h2>Registro de Usuario</h2>
-      <div className="form-container">
-        <input
-          type="text"
-          placeholder="Usuario"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+    <div className="register-page">
+      <div className="register-banner">
+        🌍 <span>Encuentra tu próximo destino soñado ✈️</span>
+      </div>
 
-        {/* Si quieres poder crear admin manualmente */}
-        <select value={rol} onChange={(e) => setRol(e.target.value)}>
-          <option value="user">Usuario</option>
-          <option value="admin">Administrador</option>
-        </select>
+      <div className="register-card">
+        <h2>Registro de Usuario</h2>
 
-        <button onClick={handleRegister}>Registrar</button>
-        <button
-          className="secondary"
-          onClick={() => navigate("/login")}
-          style={{ marginLeft: "10px" }}
-        >
-          Volver al Login
-        </button>
+        <div className="form-container">
+          <input
+            type="text"
+            placeholder="Usuario"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="Contraseña"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+
+          <select value={rol} onChange={(e) => setRol(e.target.value)}>
+            <option value="user">Usuario</option>
+            <option value="admin">Administrador</option>
+          </select>
+
+          <button onClick={handleRegister}>Registrar</button>
+          <button className="secondary" onClick={() => navigate("/login")}>
+            Volver al Login
+          </button>
+        </div>
+
+        <p className="register-footer">
+          Explora Colombia y el mundo con nuestras mejores ofertas de vuelo.
+        </p>
       </div>
     </div>
   );

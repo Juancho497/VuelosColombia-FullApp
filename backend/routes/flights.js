@@ -44,5 +44,38 @@ router.get("/", async (req, res) => {
     res.status(500).json({ message: "Error obteniendo vuelos" });
   }
 });
+// 🗑️ Eliminar vuelo
+router.delete("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Primero eliminamos reservas asociadas (y pasajeros / tickets dependientes)
+    const [reservations] = await pool.query(
+      "SELECT id FROM reservations WHERE flight_id = ?",
+      [id]
+    );
+
+    for (const r of reservations) {
+      await pool.query("DELETE FROM passengers WHERE reservation_id = ?", [
+        r.id,
+      ]);
+      await pool.query("DELETE FROM tickets WHERE reservation_id = ?", [r.id]);
+    }
+
+    await pool.query("DELETE FROM reservations WHERE flight_id = ?", [id]);
+
+    // Finalmente eliminamos el vuelo
+    const [result] = await pool.query("DELETE FROM flights WHERE id = ?", [id]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Vuelo no encontrado" });
+    }
+
+    res.json({ message: "Vuelo eliminado correctamente ✅" });
+  } catch (err) {
+    console.error("❌ Error eliminando vuelo:", err);
+    res.status(500).json({ message: "Error eliminando vuelo" });
+  }
+});
 
 module.exports = router;

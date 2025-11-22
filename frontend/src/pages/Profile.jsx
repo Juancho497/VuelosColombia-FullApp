@@ -13,7 +13,7 @@ function Profile() {
     async function loadReservations() {
       try {
         const res = await fetch(
-          `https://vueloscolombia-backend.onrender.comapi/reservations?username=${userName}`
+          `https://vueloscolombia-backend.onrender.com/api/reservations?username=${userName}`
         );
         const data = await res.json();
 

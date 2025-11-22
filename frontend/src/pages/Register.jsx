@@ -16,7 +16,7 @@ function Register() {
 
     try {
       const res = await fetch(
-        "https://vueloscolombia-backend.onrender.comapi/register",
+        "https://vueloscolombia-backend.onrender.com/api/register",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

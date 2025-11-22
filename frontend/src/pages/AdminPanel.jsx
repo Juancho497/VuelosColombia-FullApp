@@ -13,8 +13,8 @@ function AdminPanel() {
     async function loadData() {
       try {
         const [flightsRes, reservationsRes] = await Promise.all([
-          fetch("https://vueloscolombia-backend.onrender.comapi/flights"),
-          fetch("https://vueloscolombia-backend.onrender.comapi/reservations"),
+          fetch("https://vueloscolombia-backend.onrender.com/api/flights"),
+          fetch("https://vueloscolombia-backend.onrender.com/api/reservations"),
         ]);
 
         const flightsData = await flightsRes.json();
@@ -48,8 +48,8 @@ function AdminPanel() {
     if (!window.confirm(`¿Seguro que deseas eliminar este ${type}?`)) return;
     const endpoint =
       type === "vuelo"
-        ? `https://vueloscolombia-backend.onrender.comapi/flights/${id}`
-        : `https://vueloscolombia-backend.onrender.comapi/reservations/${id}`;
+        ? `https://vueloscolombia-backend.onrender.com/api/flights/${id}`
+        : `https://vueloscolombia-backend.onrender.com/api/reservations/${id}`;
 
     try {
       const res = await fetch(endpoint, { method: "DELETE" });
@@ -70,7 +70,7 @@ function AdminPanel() {
   async function viewDetails(id) {
     try {
       const res = await fetch(
-        `https://vueloscolombia-backend.onrender.comapi/reservations/${id}`
+        `https://vueloscolombia-backend.onrender.com/api/reservations/${id}`
       );
       const data = await res.json();
       setSelectedReservation(data);

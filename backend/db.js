@@ -1,19 +1,18 @@
 const mysql = require("mysql2/promise");
 require("dotenv").config();
 
-const isProduction = process.env.NODE_ENV === "production";
-
 const pool = mysql.createPool({
-  host: process.env.DB_HOST || "localhost",
-  user: process.env.DB_USER || "root",
-  password: process.env.DB_PASS || "Juancho123-",
-  database: process.env.DB_NAME || "vuelosdb",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
 
-  // 🔐 SSL SOLO para producción (Render/Railway)
-  ssl: isProduction ? { rejectUnauthorized: false } : false,
+  // SSL obligatorio para Railway
+  ssl: { rejectUnauthorized: false },
 });
 
 module.exports = pool;

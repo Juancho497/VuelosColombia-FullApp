@@ -18,11 +18,14 @@
         };
 
         try {
-          const res = await fetch("http://localhost:4000/api/reservations", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(body),
-          });
+          const res = await fetch(
+            "https://vueloscolombia-backend.onrender.comapi/reservations",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(body),
+            }
+          );
           const data = await res.json();
           alert(JSON.stringify(data, null, 2));
         } catch (err) {

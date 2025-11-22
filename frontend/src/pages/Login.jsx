@@ -17,11 +17,14 @@ function Login() {
       });
 
     try {
-      const res = await fetch("http://localhost:4000/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: usuario, password }),
-      });
+      const res = await fetch(
+        "https://vueloscolombia-backend.onrender.comapi/login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username: usuario, password }),
+        }
+      );
 
       const data = await res.json();
       console.log("🧾 Datos del login:", data);

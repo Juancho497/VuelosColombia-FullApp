@@ -13,8 +13,8 @@ function AdminPanel() {
     async function loadData() {
       try {
         const [flightsRes, reservationsRes] = await Promise.all([
-          fetch("http://localhost:4000/api/flights"),
-          fetch("http://localhost:4000/api/reservations"),
+          fetch("https://vueloscolombia-backend.onrender.comapi/flights"),
+          fetch("https://vueloscolombia-backend.onrender.comapi/reservations"),
         ]);
 
         const flightsData = await flightsRes.json();
@@ -48,8 +48,8 @@ function AdminPanel() {
     if (!window.confirm(`¿Seguro que deseas eliminar este ${type}?`)) return;
     const endpoint =
       type === "vuelo"
-        ? `http://localhost:4000/api/flights/${id}`
-        : `http://localhost:4000/api/reservations/${id}`;
+        ? `https://vueloscolombia-backend.onrender.comapi/flights/${id}`
+        : `https://vueloscolombia-backend.onrender.comapi/reservations/${id}`;
 
     try {
       const res = await fetch(endpoint, { method: "DELETE" });
@@ -69,7 +69,9 @@ function AdminPanel() {
   // 👁️ Ver detalles de reserva
   async function viewDetails(id) {
     try {
-      const res = await fetch(`http://localhost:4000/api/reservations/${id}`);
+      const res = await fetch(
+        `https://vueloscolombia-backend.onrender.comapi/reservations/${id}`
+      );
       const data = await res.json();
       setSelectedReservation(data);
     } catch (err) {

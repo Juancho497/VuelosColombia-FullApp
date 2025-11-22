@@ -63,7 +63,7 @@ function SearchFlights() {
     async function fetchAvailableDates() {
       try {
         const res = await fetch(
-          `http://localhost:4000/api/available-dates?origin=${origin}&destination=${destination}`
+          `https://vueloscolombia-backend.onrender.comapi/available-dates?origin=${origin}&destination=${destination}`
         );
         const data = await res.json();
         setAvailableDates(data.dates || []);
@@ -86,7 +86,9 @@ function SearchFlights() {
   React.useEffect(() => {
     async function fetchLocations() {
       try {
-        const res = await fetch("http://localhost:4000/api/locations");
+        const res = await fetch(
+          "https://vueloscolombia-backend.onrender.comapi/locations"
+        );
         const data = await res.json();
         setOrigins(data.origins || []);
         setDestinations(data.destinations || []);
@@ -103,7 +105,7 @@ function SearchFlights() {
     async function fetchDestinationsByOrigin() {
       try {
         const res = await fetch(
-          `http://localhost:4000/api/locations/${origin}`
+          `https://vueloscolombia-backend.onrender.comapi/locations/${origin}`
         );
         const data = await res.json();
         setDestinations(data.destinations || []);
@@ -134,7 +136,7 @@ function SearchFlights() {
       if (sort) query.append("sort", sort);
 
       const res = await fetch(
-        `http://localhost:4000/api/flights?${query.toString()}`
+        `https://vueloscolombia-backend.onrender.comapi/flights?${query.toString()}`
       );
       const data = await res.json();
 
@@ -167,7 +169,7 @@ function SearchFlights() {
       query.append("to", dateRange[0].endDate.toISOString().split("T")[0]);
 
       const res = await fetch(
-        `http://localhost:4000/api/flights?${query.toString()}`
+        `https://vueloscolombia-backend.onrender.comapi/flights?${query.toString()}`
       );
       const data = await res.json();
       setFlights(Array.isArray(data) ? data : []);
@@ -205,11 +207,14 @@ function SearchFlights() {
     };
 
     try {
-      const res = await fetch("http://localhost:4000/api/reservations", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
+      const res = await fetch(
+        "https://vueloscolombia-backend.onrender.comapi/reservations",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        }
+      );
       const data = await res.json();
 
       if (res.ok) {
@@ -765,7 +770,7 @@ function SearchFlights() {
 
                   try {
                     const res = await fetch(
-                      "http://localhost:4000/api/reservations/roundtrip",
+                      "https://vueloscolombia-backend.onrender.comapi/reservations/roundtrip",
                       {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },

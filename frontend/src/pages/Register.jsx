@@ -15,11 +15,14 @@ function Register() {
     }
 
     try {
-      const res = await fetch("http://localhost:4000/api/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password, rol }),
-      });
+      const res = await fetch(
+        "https://vueloscolombia-backend.onrender.comapi/register",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password, rol }),
+        }
+      );
 
       const data = await res.json();
 

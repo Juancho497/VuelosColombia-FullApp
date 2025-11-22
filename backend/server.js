@@ -10,16 +10,17 @@ const availableDatesRouter = require("./routes/availableDates");
 
 const app = express();
 
-// 🧩 CONFIGURACIÓN CORS
+// ✅ CORS listo para Render / Vercel
 const corsOptions = {
-  origin: "http://localhost:3000", // Permite peticiones solo desde tu frontend React
+  origin: "*", // Puedes restringir luego a tu URL de Vercel cuando lo tengas
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type"],
 };
 app.use(cors(corsOptions));
 
-// 🧠 Middleware para interpretar JSON
-app.use(express.json());
+// 🧠 Middlewares JSON
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true }));
 
 // 🚀 Rutas principales
 app.use("/api/flights", flightsRouter);
@@ -28,12 +29,13 @@ app.use("/api", authRouter);
 app.use("/api/locations", locationsRouter);
 app.use("/api/available-dates", availableDatesRouter);
 
-// ⚙️ Puerto y arranque del servidor
-const PORT = process.env.PORT || 4000;
-// Ruta raíz de prueba
+// 🏁 Ruta raíz
 app.get("/", (req, res) => {
   res.json({ mensaje: "Servidor Vuelos Colombia activo 🚀" });
 });
+
+// ⚙️ Puerto dinámico (Render usa process.env.PORT)
+const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
-  console.log(`Backend corriendo en http://localhost:${PORT}`);
+  console.log(`Backend corriendo en puerto ${PORT}`);
 });

@@ -2,7 +2,9 @@ const express = require("express");
 const router = express.Router();
 const pool = require("../db");
 
-// Obtener vuelos (filtrados y ordenados)
+// ===============================
+// 📌 OBTENER VUELOS (con filtros)
+// ===============================
 router.get("/", async (req, res) => {
   try {
     const { origin, destination, from, to, sort } = req.query;
@@ -21,7 +23,7 @@ router.get("/", async (req, res) => {
       params.push(`%${destination.toLowerCase()}%`);
     }
 
-    // ✅ Filtros de fecha (solo compara la parte de la fecha)
+    // Filtros de fecha
     if (from && !to) {
       query += " AND DATE(departure_time) = ?";
       params.push(from);
@@ -30,31 +32,32 @@ router.get("/", async (req, res) => {
       params.push(from, to);
     }
 
-    // Ordenar por precio (si se solicita)
-    if (sort === "asc") {
-      query += " ORDER BY price ASC";
-    } else if (sort === "desc") {
-      query += " ORDER BY price DESC";
-    }
+    // Ordenamiento
+    if (sort === "asc") query += " ORDER BY price ASC";
+    else if (sort === "desc") query += " ORDER BY price DESC";
 
     const [rows] = await pool.query(query, params);
-    res.json(rows);
+    return res.json(rows);
   } catch (error) {
-    console.error("Error obteniendo vuelos:", error);
-    res.status(500).json({ message: "Error obteniendo vuelos" });
+    console.error("❌ Error obteniendo vuelos:", error);
+    return res.status(500).json({ message: "Error obteniendo vuelos" });
   }
 });
-// 🗑️ Eliminar vuelo
+
+// ===============================
+// 🗑️ ELIMINAR VUELO
+// ===============================
 router.delete("/:id", async (req, res) => {
   const { id } = req.params;
 
   try {
-    // Primero eliminamos reservas asociadas (y pasajeros / tickets dependientes)
+    // Obtener reservas asociadas
     const [reservations] = await pool.query(
       "SELECT id FROM reservations WHERE flight_id = ?",
       [id]
     );
 
+    // Eliminar dependencias
     for (const r of reservations) {
       await pool.query("DELETE FROM passengers WHERE reservation_id = ?", [
         r.id,
@@ -62,19 +65,23 @@ router.delete("/:id", async (req, res) => {
       await pool.query("DELETE FROM tickets WHERE reservation_id = ?", [r.id]);
     }
 
+    // Eliminar reservas
     await pool.query("DELETE FROM reservations WHERE flight_id = ?", [id]);
 
-    // Finalmente eliminamos el vuelo
-    const [result] = await pool.query("DELETE FROM flights WHERE id = ?", [id]);
+    // Eliminar vuelo
+    const [result] = await pool.query(
+      "DELETE FROM flights WHERE id = ? LIMIT 1",
+      [id]
+    );
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: "Vuelo no encontrado" });
     }
 
-    res.json({ message: "Vuelo eliminado correctamente ✅" });
+    return res.json({ message: "Vuelo eliminado correctamente ✅" });
   } catch (err) {
     console.error("❌ Error eliminando vuelo:", err);
-    res.status(500).json({ message: "Error eliminando vuelo" });
+    return res.status(500).json({ message: "Error eliminando vuelo" });
   }
 });
 

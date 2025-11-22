@@ -1,6 +1,7 @@
-// backend/db.js
 const mysql = require("mysql2/promise");
 require("dotenv").config();
+
+const isProduction = process.env.NODE_ENV === "production";
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST || "localhost",
@@ -10,6 +11,9 @@ const pool = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
+
+  // 🔐 SSL SOLO para producción (Render/Railway)
+  ssl: isProduction ? { rejectUnauthorized: false } : false,
 });
 
 module.exports = pool;
